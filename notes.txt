@@ -1,0 +1,43 @@
+gcc -g main.c snl.c -lm -o main
+
+
+valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes --verbose --log-file=valgrind-out.txt ./main
+valgrind --leak-check=full --show-leak-kinds=all ./main
+
+gdb ./main -tui
+
+board_node *reverse(board_node *head)
+{
+    board_node *curr_node = head;
+    board_node *next_node = NULL;
+    board_node *prev_node = NULL;
+    int count = 0;
+    int width = 3;
+
+    // reverse first k nodes of the linked list
+
+    while (curr_node != NULL && count < 8)
+    {
+        next_node = curr_node->next;
+        curr_node->next = prev_node;
+        prev_node = curr_node;
+        curr_node = next_node;
+        count++;
+        // printf("count %d\n", count);
+    }
+
+    /**
+     * @brief
+     * next is now a pointer to (k+1)th node
+       Recursively call for the list starting from current.
+       And make rest of the list as next of first node
+     *
+     */
+    if (next_node != NULL)
+    {
+        head->next = reverse(next_node);
+    }
+
+    /* prev is new head of the input list */
+    return prev_node;
+}
